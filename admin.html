@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>版本升级配置 - 学习机产品管理平台</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB",
+                   "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      background: #f0f2f5;
+      color: #333;
+      font-size: 14px;
+    }
+
+    .layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 200px;
+      background: #001529;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .sidebar-header {
+      height: 64px;
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      font-size: 16px;
+      font-weight: 600;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .sidebar-menu {
+      padding: 16px 0;
+    }
+
+    .menu-item {
+      padding: 12px 24px;
+      cursor: pointer;
+      transition: all 0.3s;
+      color: rgba(255, 255, 255, 0.65);
+    }
+
+    .menu-item:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+    }
+
+    .menu-item.active {
+      background: #1890ff;
+      color: #fff;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      height: 64px;
+      background: #fff;
+      box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      justify-content: space-between;
+    }
+
+    .breadcrumb {
+      color: #666;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .content {
+      flex: 1;
+      padding: 24px;
+    }
+
+    .page-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    /* Filter Section */
+    .filter-section {
+      background: #fff;
+      padding: 20px;
+      border-radius: 4px;
+      margin-bottom: 16px;
+    }
+
+    .filter-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: #333;
+    }
+
+    .filter-row {
+      display: flex;
+      gap: 24px;
+      margin-bottom: 16px;
+      align-items: center;
+    }
+
+    .filter-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .filter-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .filter-label {
+      color: #666;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    .filter-input {
+      width: 180px;
+      padding: 4px 11px;
+      border: 1px solid #d9d9d9;
+      border-radius: 2px;
+      font-size: 14px;
+    }
+
+    .filter-select {
+      width: 180px;
+      padding: 4px 11px;
+      border: 1px solid #d9d9d9;
+      border-radius: 2px;
+      font-size: 14px;
+    }
+
+    .filter-actions {
+      display: flex;
+      gap: 8px;
+      margin-left: auto;
+    }
+
+    .btn-search {
+      background: #1890ff;
+      color: #fff;
+      border: none;
+      padding: 4px 15px;
+      border-radius: 2px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .btn-reset {
+      background: #fff;
+      color: #666;
+      border: 1px solid #d9d9d9;
+      padding: 4px 15px;
+      border-radius: 2px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      background: #fff;
+      padding: 16px 20px;
+      border-radius: 4px;
+    }
+
+    .toolbar-left {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn {
+      padding: 4px 15px;
+      border: none;
+      border-radius: 2px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.3s;
+    }
+
+    .btn-primary {
+      background: #1890ff;
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: #40a9ff;
+    }
+
+    .btn-default {
+      background: #fff;
+      color: #333;
+      border: 1px solid #d9d9d9;
+    }
+
+    .btn-default:hover {
+      color: #1890ff;
+      border-color: #1890ff;
+    }
+
+    .btn-danger {
+      background: #fff;
+      color: #ff4d4f;
+      border: 1px solid #ff4d4f;
+    }
+
+    .btn-danger:hover {
+      background: #ff4d4f;
+      color: #fff;
+    }
+
+    /* Table */
+    .table-container {
+      background: #fff;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th {
+      background: #fafafa;
+      padding: 12px 16px;
+      text-align: left;
+      font-weight: 500;
+      font-size: 14px;
+      border-bottom: 1px solid #f0f0f0;
+      color: #333;
+    }
+
+    td {
+      padding: 12px 16px;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 14px;
+      color: #666;
+    }
+
+    tr:hover {
+      background: #fafafa;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 2px;
+      font-size: 12px;
+    }
+
+    .tag-success {
+      background: #f6ffed;
+      color: #52c41a;
+      border: 1px solid #b7eb8f;
+    }
+
+    .tag-warning {
+      background: #fff7e6;
+      color: #fa8c16;
+      border: 1px solid #ffd591;
+    }
+
+    .tag-info {
+      background: #e6f7ff;
+      color: #1890ff;
+      border: 1px solid #91d5ff;
+    }
+
+    .tag-default {
+      background: #fafafa;
+      color: #999;
+      border: 1px solid #d9d9d9;
+    }
+
+    .action-link {
+      color: #1890ff;
+      cursor: pointer;
+      margin-right: 12px;
+      font-size: 14px;
+    }
+
+    .action-link:hover {
+      text-decoration: underline;
+    }
+
+    .action-link:last-child {
+      margin-right: 0;
+    }
+
+    /* Pagination */
+    .pagination {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      padding: 16px 20px;
+      gap: 8px;
+    }
+
+    .pagination-info {
+      color: #666;
+      font-size: 14px;
+      margin-right: 16px;
+    }
+
+    .pagination-btn {
+      padding: 4px 8px;
+      border: 1px solid #d9d9d9;
+      background: #fff;
+      cursor: pointer;
+      font-size: 14px;
+      border-radius: 2px;
+    }
+
+    .pagination-btn:hover {
+      color: #1890ff;
+      border-color: #1890ff;
+    }
+
+    .pagination-btn.active {
+      background: #1890ff;
+      color: #fff;
+      border-color: #1890ff;
+    }
+
+    .pagination-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal {
+      background: #fff;
+      border-radius: 4px;
+      width: 90%;
+      max-width: 720px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-header {
+      padding: 16px 24px;
+      border-bottom: 1px solid #f0f0f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-title {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: #999;
+    }
+
+    .modal-body {
+      padding: 24px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .modal-body::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .modal-body::-webkit-scrollbar-track {
+      background: #f0f0f0;
+    }
+
+    .modal-body::-webkit-scrollbar-thumb {
+      background: #bfbfbf;
+      border-radius: 3px;
+    }
+
+    .modal-footer {
+      padding: 12px 24px;
+      border-top: 1px solid #f0f0f0;
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: normal;
+      color: #333;
+      font-size: 14px;
+    }
+
+    .required {
+      color: #ff4d4f;
+      margin-right: 4px;
+      font-size: 14px;
+    }
+
+    .form-input,
+    .form-select,
+    .form-textarea {
+      width: 100%;
+      padding: 6px 12px;
+      border: 1px solid #d9d9d9;
+      border-radius: 2px;
+      font-size: 14px;
+      transition: all 0.3s;
+      line-height: 1.5715;
+    }
+
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+      outline: none;
+      border-color: #40a9ff;
+      box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+    }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .form-hint {
+      color: #999;
+      font-size: 12px;
+      margin-top: 6px;
+      line-height: 1.5;
+    }
+
+    .radio-group {
+      display: flex;
+      gap: 24px;
+    }
+
+    .radio-item {
+      display: flex;
+      align-items: center;
+      font-size: 14px;
+    }
+
+    .radio-item input {
+      margin-right: 8px;
+      width: 16px;
+      height: 16px;
+    }
+
+    .checkbox-group {
+      border: 1px solid #d9d9d9;
+      border-radius: 2px;
+      padding: 8px 12px;
+      max-height: 240px;
+      overflow-y: auto;
+      background: #fafafa;
+    }
+
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+      padding: 4px 0;
+      font-size: 14px;
+    }
+
+    .checkbox-item input {
+      margin-right: 8px;
+      width: 16px;
+      height: 16px;
+    }
+
+    .location-item {
+      margin-bottom: 4px;
+    }
+
+    .location-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .location-parent {
+      font-weight: 500;
+      margin-bottom: 0;
+      display: flex;
+      align-items: center;
+      background: white;
+      padding: 4px 8px;
+      border-radius: 2px;
+    }
+
+    .location-parent .checkbox-item {
+      padding: 0;
+      margin: 0;
+    }
+
+    .location-children {
+      margin-left: 32px;
+      margin-top: 4px;
+      margin-bottom: 4px;
+      padding-left: 12px;
+      border-left: 2px solid #e8e8e8;
+    }
+
+    .location-children .checkbox-item {
+      padding: 3px 0;
+      font-size: 13px;
+      color: #666;
+      font-weight: normal;
+    }
+
+    .expand-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 18px;
+      height: 18px;
+      margin-right: 6px;
+      cursor: pointer;
+      user-select: none;
+      color: #999;
+      font-size: 10px;
+      transition: transform 0.2s;
+      flex-shrink: 0;
+    }
+
+    .expand-icon.collapsed {
+      transform: rotate(-90deg);
+    }
+
+    .section-divider {
+      height: 1px;
+      background: #f0f0f0;
+      margin: 24px 0;
+    }
+
+    .section-header {
+      font-size: 15px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .form-row .form-group {
+      margin-bottom: 0;
+    }
+
+    .form-row + .form-row {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-header">学习机管理平台</div>
+      <div class="sidebar-menu">
+        <div class="menu-item">首页</div>
+        <div class="menu-item">产品管理</div>
+        <div class="menu-item">讯飞AI学配置</div>
+        <div class="menu-item active">版本升级</div>
+        <div class="menu-item">设备管理</div>
+        <div class="menu-item">用户管理</div>
+        <div class="menu-item">系统设置</div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Header -->
+      <div class="header">
+        <div class="breadcrumb">讯飞AI学配置 / 版本升级</div>
+        <div class="user-info">
+          <span>管理员</span>
+          <span>|</span>
+          <span style="cursor: pointer;">退出</span>
+        </div>
+      </div>
+
+      <!-- Content -->
+      <div class="content">
+        <div class="page-title">版本升级配置</div>
+
+        <!-- Filter Section -->
+        <div class="filter-section">
+          <div class="filter-title">筛选条件</div>
+          <div class="filter-row">
+            <div class="filter-item">
+              <span class="filter-label">产品：</span>
+              <select class="filter-select" id="filterProduct">
+                <option value="">全部</option>
+                <option value="xfaixue">讯飞 AI学</option>
+              </select>
+            </div>
+            <div class="filter-item">
+              <span class="filter-label">平台：</span>
+              <select class="filter-select" id="filterPlatform">
+                <option value="">全部</option>
+                <option value="android">Android</option>
+                <option value="ios">iOS</option>
+                <option value="harmony">鸿蒙</option>
+              </select>
+            </div>
+            <div class="filter-item">
+              <span class="filter-label">状态：</span>
+              <select class="filter-select" id="filterStatus">
+                <option value="">全部</option>
+                <option value="online">已上架</option>
+                <option value="pending">待上架</option>
+                <option value="offline">已下架</option>
+              </select>
+            </div>
+            <div class="filter-actions">
+              <button class="btn-search" onclick="searchData()">查询</button>
+              <button class="btn-reset" onclick="resetFilter()">重置</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="toolbar">
+          <div class="toolbar-left">
+            <button class="btn btn-primary" onclick="openModal()">+ 新增</button>
+            <button class="btn btn-default" onclick="exportData()">导出</button>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th><input type="checkbox" id="selectAll" onclick="toggleSelectAll()"></th>
+                <th>产品</th>
+                <th>平台</th>
+                <th>目标版本</th>
+                <th>已升级人数</th>
+                <th>状态</th>
+                <th>编辑人</th>
+                <th>上架时间</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody">
+              <tr>
+                <td><input type="checkbox" class="row-checkbox"></td>
+                <td>讯飞 AI学</td>
+                <td>Android</td>
+                <td>4.2.0</td>
+                <td>1,234</td>
+                <td><span class="tag tag-success">已上架</span></td>
+                <td>qqcao4</td>
+                <td>2025-03-20 10:30:00</td>
+                <td>
+                  <span class="action-link" onclick="viewDetail()">详情</span>
+                  <span class="action-link" onclick="editItem()">编辑</span>
+                  <span class="action-link" onclick="deleteItem()">删除</span>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="row-checkbox"></td>
+                <td>讯飞 AI学</td>
+                <td>iOS</td>
+                <td>4.1.0</td>
+                <td>0</td>
+                <td><span class="tag tag-info">待上架</span></td>
+                <td>qqcao4</td>
+                <td>2025-03-19 14:20:00</td>
+                <td>
+                  <span class="action-link" onclick="viewDetail()">详情</span>
+                  <span class="action-link" onclick="editItem()">编辑</span>
+                  <span class="action-link" onclick="deleteItem()">删除</span>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="row-checkbox"></td>
+                <td>讯飞 AI学</td>
+                <td>鸿蒙</td>
+                <td>4.0.0</td>
+                <td>856</td>
+                <td><span class="tag tag-default">已下架</span></td>
+                <td>qqcao4</td>
+                <td>2025-03-18 09:15:00</td>
+                <td>
+                  <span class="action-link" onclick="viewDetail()">详情</span>
+                  <span class="action-link" onclick="editItem()">编辑</span>
+                  <span class="action-link" onclick="deleteItem()">删除</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- Pagination -->
+          <div class="pagination">
+            <span class="pagination-info">共 3 条</span>
+            <button class="pagination-btn" disabled>上一页</button>
+            <button class="pagination-btn active">1</button>
+            <button class="pagination-btn" disabled>下一页</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">新增升级</div>
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <form id="upgradeForm">
+          <!-- 升级基础信息 -->
+          <div class="section-header">升级基础信息</div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label"><span class="required">*</span>产品</label>
+              <select class="form-select" id="product">
+                <option value="xfaixue" selected>讯飞 AI学</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label"><span class="required">*</span>平台</label>
+              <select class="form-select" id="platform" onchange="handlePlatformChange()">
+                <option value="">请选择</option>
+                <option value="ios">iOS</option>
+                <option value="harmony">鸿蒙</option>
+                <option value="android">Android</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label"><span class="required">*</span>目标版本</label>
+              <input type="text" class="form-input" id="targetVersion" placeholder="请选择">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label"><span class="required">*</span>版本类型</label>
+              <select class="form-select" id="versionType">
+                <option value="">请选择</option>
+                <option value="full">全量版本</option>
+                <option value="gray">灰度版本</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="section-divider"></div>
+
+          <!-- 升级策略设置 -->
+          <div class="section-header">升级策略设置</div>
+
+          <div class="form-group">
+            <label class="form-label"><span class="required">*</span>升级方式</label>
+            <div class="radio-group">
+              <label class="radio-item">
+                <input type="radio" name="upgradeType" value="force" onchange="handleUpgradeTypeChange()">
+                强制升级
+              </label>
+              <label class="radio-item">
+                <input type="radio" name="upgradeType" value="suggest" onchange="handleUpgradeTypeChange()">
+                提示升级
+              </label>
+            </div>
+            <div class="form-hint" id="forceHint" style="display: none;">
+              注：强制升级仅对 v4.x.0 及以上版本有效，低版本用户将收到普通升级提示。
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label"><span class="required">*</span>升级位置</label>
+            <div class="checkbox-group" id="locationCheckboxes">
+              <!-- Dynamic checkboxes -->
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">升级人数</label>
+            <input type="text" class="form-input" id="upgradeCount" placeholder="0或不填则不限制">
+            <div class="form-hint">填写数字，表示最多升级的用户数量，0或不填则不限制</div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label"><span class="required">*</span>升级时间</label>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <input type="datetime-local" class="form-input" id="upgradeStartTime" style="flex: 1;">
+              <span>—</span>
+              <input type="datetime-local" class="form-input" id="upgradeEndTime" style="flex: 1;">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label"><span class="required">*</span>升级策略</label>
+            <div class="radio-group">
+              <label class="radio-item">
+                <input type="radio" name="upgradeStrategy" value="parentid">
+                指定ParentID
+              </label>
+              <label class="radio-item">
+                <input type="radio" name="upgradeStrategy" value="group">
+                指定人群推送
+              </label>
+              <label class="radio-item">
+                <input type="radio" name="upgradeStrategy" value="ratio">
+                按策略推送
+              </label>
+              <label class="radio-item">
+                <input type="radio" name="upgradeStrategy" value="all" checked>
+                全部
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">屏蔽对象</label>
+            <div class="radio-group">
+              <label class="radio-item">
+                <input type="radio" name="blockTarget" value="parentid">
+                指定ParentID
+              </label>
+              <label class="radio-item">
+                <input type="radio" name="blockTarget" value="group">
+                指定人群屏蔽
+              </label>
+              <label class="radio-item">
+                <input type="radio" name="blockTarget" value="ratio">
+                按策略屏蔽
+              </label>
+              <label class="radio-item">
+                <input type="radio" name="blockTarget" value="all" checked>
+                全部
+              </label>
+            </div>
+          </div>
+
+          <div class="section-divider"></div>
+
+          <!-- 弹窗内容配置 -->
+          <div class="section-header">弹窗内容配置</div>
+
+          <div class="form-group">
+            <label class="form-label"><span class="required">*</span>升级弹窗标题</label>
+            <input type="text" class="form-input" id="dialogTitle" maxlength="10" placeholder="最多10个字">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label"><span class="required">*</span>升级弹窗说明</label>
+            <textarea class="form-textarea" id="dialogDesc" maxlength="100"
+              placeholder="升级说明：提示用户升级的说明文案，最多100字。如为强制升级，请明确指出旧版本xx功能暂无法使用或部分功能受限制，并引导用户尽快更新。"></textarea>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label"><span class="required">*</span>右侧按钮名称</label>
+              <input type="text" class="form-input" id="rightButton" value="立即更新" maxlength="6">
+              <div class="form-hint">右侧按钮均跳转至应用商店</div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label"><span class="required">*</span>左侧按钮名称</label>
+              <input type="text" class="form-input" id="leftButton" value="暂不更新" maxlength="6">
+            </div>
+          </div>
+
+          <div class="section-divider"></div>
+
+          <!-- 左侧按钮跳转及冷却策略 -->
+          <div class="section-header">左侧按钮跳转及冷却策略</div>
+
+          <div class="form-group" id="jumpBehaviorSection">
+            <label class="form-label"><span class="required">*</span>跳转行为</label>
+            <div class="radio-group" id="jumpBehaviorGroup" style="gap: 16px; flex-wrap: wrap;">
+              <span style="color:#bbb;">请先选择升级方式</span>
+            </div>
+          </div>
+
+          <div class="form-group" id="cooldownGroup" style="display: none;">
+            <label class="form-label"><span class="required">*</span>冷却时间</label>
+            <div class="radio-group">
+              <label class="radio-item">
+                <input type="radio" name="cooldown" value="24h" checked>
+                24 小时内
+              </label>
+              <label class="radio-item">
+                <input type="radio" name="cooldown" value="7d">
+                7 天内
+              </label>
+              <label class="radio-item">
+                <input type="radio" name="cooldown" value="once">
+                仅曝光一次
+              </label>
+            </div>
+            <div class="form-hint">用户点击左侧按钮后，在选定的时间内，再次进入预埋入口不会重复弹出此版本的升级提示。</div>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-default" onclick="closeModal()">取消</button>
+        <button class="btn btn-primary" onclick="submitForm()">确定</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 页面位置数据 - 级联结构
+    const pageLocations = [
+      { id: 'study', name: '学习页（老版首页）', mainTab: true, children: [] },
+      { id: 'device', name: '设备页（老版守护）', mainTab: true, children: [] },
+      { id: 'learning', name: '学情页（仅老版）', mainTab: true, children: [] },
+      { id: 'service', name: '服务页（老版必看）', mainTab: true, children: [] },
+      { id: 'mine', name: '我的页', mainTab: true, children: [] },
+      { id: 'message', name: '消息页（仅新版）', mainTab: false, children: [] },
+      { id: 'contact', name: '联系孩子页', mainTab: false, children: [] },
+      {
+        id: 'device-control',
+        name: '整机管控',
+        mainTab: false,
+        children: [
+          { id: 'device-time', name: '整机可用时间页', mainTab: false },
+          { id: 'adjust-time', name: '调整可用时间页', mainTab: false }
+        ]
+      },
+      {
+        id: 'app-control',
+        name: '应用管控',
+        mainTab: false,
+        children: [
+          { id: 'app-guard', name: '应用守护页', mainTab: false }
+        ]
+      },
+      {
+        id: 'app-center',
+        name: '应用中心',
+        mainTab: false,
+        children: [
+          { id: 'app-home', name: '应用中心首页', mainTab: false }
+        ]
+      }
+    ];
+
+    // 初始化升级位置复选框 - 级联样式
+    function initLocationCheckboxes() {
+      const container = document.getElementById('locationCheckboxes');
+      container.innerHTML = pageLocations.map(loc => {
+        const hasChildren = loc.children && loc.children.length > 0;
+
+        let html = '<div class="location-item">';
+
+        // 父节点
+        html += '<div class="location-parent">';
+        if (hasChildren) {
+          html += `<span class="expand-icon collapsed" onclick="toggleChildren('${loc.id}')" id="icon-${loc.id}">▼</span>`;
+        } else {
+          html += '<span style="display:inline-block;width:18px;"></span>';
+        }
+        html += `<label class="checkbox-item" style="display:inline-flex;margin:0;">
+          <input type="checkbox" id="loc-${loc.id}" value="${loc.id}" data-main-tab="${loc.mainTab}" onchange="handleParentCheck('${loc.id}')">
+          ${loc.name}
+        </label>`;
+        html += '</div>';
+
+        // 子节点（默认隐藏）
+        if (hasChildren) {
+          html += `<div class="location-children" id="children-${loc.id}" style="display:none;">`;
+          loc.children.forEach(child => {
+            html += `<label class="checkbox-item">
+              <input type="checkbox" id="loc-${child.id}" value="${child.id}" data-main-tab="${child.mainTab}" data-parent="${loc.id}" onchange="handleChildCheck('${loc.id}')">
+              ${child.name}
+            </label>`;
+          });
+          html += '</div>';
+        }
+
+        html += '</div>';
+        return html;
+      }).join('');
+    }
+
+    // 切换子节点显示/隐藏
+    function toggleChildren(parentId) {
+      const childrenDiv = document.getElementById(`children-${parentId}`);
+      const icon = document.getElementById(`icon-${parentId}`);
+
+      if (childrenDiv.style.display === 'none') {
+        childrenDiv.style.display = 'block';
+        icon.classList.remove('collapsed');
+      } else {
+        childrenDiv.style.display = 'none';
+        icon.classList.add('collapsed');
+      }
+    }
+
+    // 父节点勾选时，自动勾选所有子节点
+    function handleParentCheck(parentId) {
+      const parentCheckbox = document.getElementById(`loc-${parentId}`);
+      const childrenDiv = document.getElementById(`children-${parentId}`);
+
+      if (childrenDiv) {
+        const childCheckboxes = childrenDiv.querySelectorAll('input[type="checkbox"]');
+        childCheckboxes.forEach(cb => {
+          if (!cb.disabled) {
+            cb.checked = parentCheckbox.checked;
+          }
+        });
+      }
+    }
+
+    // 子节点勾选时，检查是否需要勾选父节点
+    function handleChildCheck(parentId) {
+      const parentCheckbox = document.getElementById(`loc-${parentId}`);
+      const childrenDiv = document.getElementById(`children-${parentId}`);
+
+      if (childrenDiv) {
+        const childCheckboxes = Array.from(childrenDiv.querySelectorAll('input[type="checkbox"]'));
+        const checkedChildren = childCheckboxes.filter(cb => cb.checked);
+
+        // 如果所有子节点都选中，则选中父节点
+        if (checkedChildren.length === childCheckboxes.length && checkedChildren.length > 0) {
+          parentCheckbox.checked = true;
+        } else {
+          parentCheckbox.checked = false;
+        }
+      }
+    }
+
+    function handlePlatformChange() {
+      const platform = document.getElementById('platform').value;
+      const versionTypeSelect = document.getElementById('versionType');
+
+      if (platform === 'ios' || platform === 'harmony') {
+        versionTypeSelect.value = 'full';
+        versionTypeSelect.disabled = true;
+      } else {
+        versionTypeSelect.disabled = false;
+      }
+    }
+
+    function handleUpgradeTypeChange() {
+      const upgradeType = document.querySelector('input[name="upgradeType"]:checked')?.value;
+      const forceHint = document.getElementById('forceHint');
+      const jumpBehaviorGroup = document.getElementById('jumpBehaviorGroup');
+      const cooldownGroup = document.getElementById('cooldownGroup');
+
+      forceHint.style.display = upgradeType === 'force' ? 'block' : 'none';
+
+      // 更新升级位置的禁用状态
+      const allCheckboxes = document.querySelectorAll('#locationCheckboxes input[type="checkbox"]');
+      allCheckboxes.forEach(checkbox => {
+        const isMainTab = checkbox.getAttribute('data-main-tab') === 'true';
+        if (upgradeType === 'force' && isMainTab) {
+          checkbox.disabled = true;
+          checkbox.checked = false;
+        } else {
+          checkbox.disabled = false;
+        }
+      });
+
+      if (upgradeType === 'force') {
+        jumpBehaviorGroup.innerHTML = `
+          <label class="radio-item">
+            <input type="radio" name="jumpBehavior" value="back" checked>
+            返回上一级页
+          </label>
+          <label class="radio-item">
+            <input type="radio" name="jumpBehavior" value="home">
+            返回首页
+          </label>
+        `;
+      } else {
+        jumpBehaviorGroup.innerHTML = `
+          <label class="radio-item">
+            <input type="radio" name="jumpBehavior" value="target" checked>
+            进入目标页
+          </label>
+          <label class="radio-item">
+            <input type="radio" name="jumpBehavior" value="back">
+            返回上一级页
+          </label>
+          <label class="radio-item">
+            <input type="radio" name="jumpBehavior" value="home">
+            返回首页
+          </label>
+        `;
+      }
+
+      cooldownGroup.style.display = 'block';
+    }
+
+    function openModal() {
+      document.getElementById('modalOverlay').classList.add('active');
+      document.body.style.overflow = 'hidden';
+      initLocationCheckboxes();
+    }
+
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.remove('active');
+      document.body.style.overflow = '';
+      document.getElementById('upgradeForm').reset();
+      document.getElementById('jumpBehaviorGroup').innerHTML = '<span style="color:#bbb;">请先选择升级方式</span>';
+      document.getElementById('cooldownGroup').style.display = 'none';
+      document.getElementById('forceHint').style.display = 'none';
+      document.getElementById('versionType').disabled = false;
+    }
+
+    function submitForm() {
+      const selectedLocations = Array.from(document.querySelectorAll('#locationCheckboxes input:checked'))
+        .map(cb => cb.value);
+
+      const formData = {
+        product: document.getElementById('product').value,
+        platform: document.getElementById('platform').value,
+        targetVersion: document.getElementById('targetVersion').value,
+        versionType: document.getElementById('versionType').value,
+        upgradeType: document.querySelector('input[name="upgradeType"]:checked')?.value,
+        locations: selectedLocations,
+        upgradeCount: document.getElementById('upgradeCount').value,
+        upgradeStartTime: document.getElementById('upgradeStartTime').value,
+        upgradeEndTime: document.getElementById('upgradeEndTime').value,
+        upgradeStrategy: document.querySelector('input[name="upgradeStrategy"]:checked')?.value,
+        blockTarget: document.querySelector('input[name="blockTarget"]:checked')?.value,
+        dialogTitle: document.getElementById('dialogTitle').value,
+        dialogDesc: document.getElementById('dialogDesc').value,
+        rightButton: document.getElementById('rightButton').value,
+        leftButton: document.getElementById('leftButton').value,
+        jumpBehavior: document.querySelector('input[name="jumpBehavior"]:checked')?.value,
+        cooldown: document.querySelector('input[name="cooldown"]:checked')?.value
+      };
+
+      // 简单验证
+      if (!formData.product || !formData.platform || !formData.targetVersion ||
+          !formData.versionType || !formData.upgradeType ||
+          selectedLocations.length === 0 ||
+          !formData.upgradeStartTime || !formData.upgradeEndTime ||
+          !formData.upgradeStrategy ||
+          !formData.dialogTitle || !formData.dialogDesc) {
+        alert('请填写所有必填项！');
+        return;
+      }
+
+      console.log('提交数据:', formData);
+      alert('配置保存成功！');
+      closeModal();
+    }
+
+    function editItem() {
+      openModal();
+    }
+
+    function deleteItem() {
+      if (confirm('确定要删除这条配置吗？')) {
+        alert('删除成功！');
+      }
+    }
+
+    document.getElementById('modalOverlay').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeModal();
+      }
+    });
+
+    function viewDetail() {
+      alert('查看详情功能');
+    }
+
+    function searchData() {
+      const product = document.getElementById('filterProduct').value;
+      const platform = document.getElementById('filterPlatform').value;
+      const status = document.getElementById('filterStatus').value;
+      console.log('筛选条件:', { product, platform, status });
+      alert('查询功能');
+    }
+
+    function resetFilter() {
+      document.getElementById('filterProduct').value = '';
+      document.getElementById('filterPlatform').value = '';
+      document.getElementById('filterStatus').value = '';
+    }
+
+    function toggleSelectAll() {
+      const selectAll = document.getElementById('selectAll');
+      const checkboxes = document.querySelectorAll('.row-checkbox');
+      checkboxes.forEach(cb => cb.checked = selectAll.checked);
+    }
+
+    function batchDelete() {
+      const checkedBoxes = document.querySelectorAll('.row-checkbox:checked');
+      if (checkedBoxes.length === 0) {
+        alert('请至少选择一条数据！');
+        return;
+      }
+      if (confirm(`确定要删除选中的 ${checkedBoxes.length} 条配置吗？`)) {
+        alert('批量删除成功！');
+        checkedBoxes.forEach(cb => cb.checked = false);
+        document.getElementById('selectAll').checked = false;
+      }
+    }
+
+    function exportData() {
+      alert('导出功能：将导出当前筛选条件下的所有数据');
+      console.log('执行导出操作');
+    }
+  </script>
+</body>
+</html>
