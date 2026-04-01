@@ -517,6 +517,16 @@
       height: 16px;
     }
 
+    .checkbox-item input:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+
+    .checkbox-item:has(input:disabled) {
+      color: #bbb;
+      cursor: not-allowed;
+    }
+
     .location-item {
       margin-bottom: 4px;
     }
@@ -894,8 +904,8 @@
 
           <div class="section-divider"></div>
 
-          <!-- 弹窗内容配置 -->
-          <div class="section-header">弹窗内容配置</div>
+          <!-- 升级弹窗内容配置 -->
+          <div class="section-header">升级弹窗内容配置</div>
 
           <div class="form-group">
             <label class="form-label"><span class="required">*</span>升级弹窗标题</label>
@@ -908,49 +918,46 @@
               placeholder="升级说明：提示用户升级的说明文案，最多100字。如为强制升级，请明确指出旧版本xx功能暂无法使用或部分功能受限制，并引导用户尽快更新。"></textarea>
           </div>
 
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label"><span class="required">*</span>右侧按钮名称</label>
-              <input type="text" class="form-input" id="rightButton" value="立即更新" maxlength="6">
-              <div class="form-hint">右侧按钮均跳转至应用商店</div>
-            </div>
+          <div class="form-group">
+            <label class="form-label"><span class="required">*</span>右侧按钮名称</label>
+            <input type="text" class="form-input" id="rightButton" value="立即更新" maxlength="6">
+            <div class="form-hint">右侧按钮均跳转至应用商店</div>
+          </div>
 
+          <div class="form-row">
             <div class="form-group">
               <label class="form-label"><span class="required">*</span>左侧按钮名称</label>
               <input type="text" class="form-input" id="leftButton" value="暂不更新" maxlength="6">
             </div>
-          </div>
 
-          <div class="section-divider"></div>
-
-          <!-- 左侧按钮跳转及冷却策略 -->
-          <div class="section-header">左侧按钮跳转及冷却策略</div>
-
-          <div class="form-group" id="jumpBehaviorSection">
-            <label class="form-label"><span class="required">*</span>跳转行为</label>
-            <div class="radio-group" id="jumpBehaviorGroup" style="gap: 16px; flex-wrap: wrap;">
-              <span style="color:#bbb;">请先选择升级方式</span>
+            <div class="form-group" id="jumpBehaviorSection">
+              <label class="form-label"><span class="required">*</span>左侧按钮跳转行为</label>
+              <div class="radio-group" id="jumpBehaviorGroup" style="gap: 16px; flex-wrap: wrap;">
+                <span style="color:#bbb;">请先选择升级方式</span>
+              </div>
             </div>
           </div>
 
-          <div class="form-group" id="cooldownGroup" style="display: none;">
-            <label class="form-label"><span class="required">*</span>冷却时间</label>
+          <div class="form-group" id="cooldownGroup" style="margin-top: 20px;">
+            <label class="form-label"><span class="required">*</span>升级弹窗冷却时间</label>
             <div class="radio-group">
               <label class="radio-item">
-                <input type="radio" name="cooldown" value="24h" checked>
+                <input type="radio" name="cooldown" value="once" checked>
+                仅曝光一次
+              </label>
+              <label class="radio-item">
+                <input type="radio" name="cooldown" value="24h">
                 24 小时内
               </label>
               <label class="radio-item">
                 <input type="radio" name="cooldown" value="7d">
                 7 天内
               </label>
-              <label class="radio-item">
-                <input type="radio" name="cooldown" value="once">
-                仅曝光一次
-              </label>
             </div>
             <div class="form-hint">用户点击左侧按钮后，在选定的时间内，再次进入预埋入口不会重复弹出此版本的升级提示。</div>
           </div>
+
+          <div class="section-divider"></div>
         </form>
       </div>
 
@@ -969,7 +976,7 @@
       { id: 'learning', name: '学情页（仅老版）', mainTab: true, children: [] },
       { id: 'service', name: '服务页（老版必看）', mainTab: true, children: [] },
       { id: 'mine', name: '我的页', mainTab: true, children: [] },
-      { id: 'message', name: '消息页（仅新版）', mainTab: false, children: [] },
+      { id: 'message', name: '消息页（仅新版）', mainTab: true, children: [] },
       { id: 'contact', name: '联系孩子页', mainTab: false, children: [] },
       {
         id: 'device-control',
